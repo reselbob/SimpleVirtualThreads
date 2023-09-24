@@ -12,6 +12,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>18</maven.compiler.source>
+    <maven.compiler.target>18</maven.compiler.target>
   </properties>
 
   <dependencies>
@@ -23,17 +25,5 @@
     </dependency>
   </dependencies>
   <build>
-    <plugins>
-      <!-- Other plugins may exist here -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version> <!-- Use the latest version -->
-        <configuration>
-          <source>21</source>
-          <target>21</target>
-        </configuration>
-      </plugin>
-    </plugins>
   </build>
 </project>
