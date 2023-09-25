@@ -47,6 +47,17 @@ mvn --version
 
 ```
 
+# Get the code
+
+```bash
+git clone https://github.com/reselbob/SimpleVirtualThreads.git
+
+cd SimpleVirtualThreads
+
+git checkout development
+
+```
+
 # Compile the code
 
 ```bash
