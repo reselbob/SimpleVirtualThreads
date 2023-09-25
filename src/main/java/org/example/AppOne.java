@@ -4,40 +4,27 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.concurrent.CompletableFuture;
 
-/**
- * Hello world!
- *
- */
-public class App
-{
-    public static void main( String[] args )
-    {
-        System.out.println( "Starting calls!" );
-        int numberOfThreads = 10;
+public class AppOne {
+    public static void main(String[] args) {
+        // Create a Runnable instance (a simple task)
+        Runnable task = () -> {
+            HttpClient httpClient = HttpClient.newHttpClient();
+            String result = makeHttpRequest(httpClient);
+            System.out.println("Thread is running and the result is: " + result);
+        };
 
-        // Create an HttpClient
-        HttpClient httpClient = HttpClient.newHttpClient();
+        int numberOfThreads = 10000;
 
-        // Create an array of CompletableFuture to store the results of each thread
-        CompletableFuture[] futures = new CompletableFuture[numberOfThreads];
+        for (int i = 1; i <= numberOfThreads; i++) {
+            // Create a new thread and start it
+            Thread thread = new Thread(task);
+            thread.start();
 
-        for (int i = 0; i < numberOfThreads; i++) {
-            // Create a new thread for making an HTTP request
-            int threadNumber = i;
-            CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-                String result = makeHttpRequest(httpClient);
-                System.out.println("Thread " + threadNumber + ": " + result);
-            });
+            String str = String.format("Thread number %s is running.", i);
+            System.out.println(str);
 
-            futures[i] = future;
         }
-
-        // Wait for all threads to complete
-        CompletableFuture<Void> allOf = CompletableFuture.allOf(futures);
-        allOf.join();
-
     }
 
     private static String makeHttpRequest(HttpClient httpClient) {

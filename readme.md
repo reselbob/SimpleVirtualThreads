@@ -66,8 +66,14 @@ git checkout development
 mvn compile   
 ```
 
-# Run the code
+# Run the evil code
 
 ```bash
- mvn exec:java -Dexec.mainClass="org.example.App"
+ mvn exec:java -Dexec.mainClass="org.example.AppOne"
+```
+
+# Run the good code
+
+```bash
+ mvn exec:java -Dexec.mainClass="org.example.AppTwo"
 ```
