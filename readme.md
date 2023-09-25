@@ -50,6 +50,8 @@ mvn --version
 # Get the code
 
 ```bash
+cd ~/
+
 git clone https://github.com/reselbob/SimpleVirtualThreads.git
 
 cd SimpleVirtualThreads
