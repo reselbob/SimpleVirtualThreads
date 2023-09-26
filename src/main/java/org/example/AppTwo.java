@@ -12,16 +12,16 @@ import java.util.concurrent.CompletableFuture;
  */
 public class AppTwo
 {
-    public static void main( String[] args )
-    {
+    public static void main( String[] args ) throws InterruptedException {
         System.out.println( "Starting calls!" );
         int numberOfThreads = 10;
 
         // Create an HttpClient
         HttpClient httpClient = HttpClient.newHttpClient();
-
+/*
         // Create an array of CompletableFuture to store the results of each thread
         CompletableFuture[] futures = new CompletableFuture[numberOfThreads];
+
 
         for (int i = 0; i < numberOfThreads; i++) {
             // Create a new thread for making an HTTP request
@@ -32,12 +32,25 @@ public class AppTwo
             });
 
             futures[i] = future;
-        }
+
 
         // Wait for all threads to complete
         CompletableFuture<Void> allOf = CompletableFuture.allOf(futures);
         allOf.join();
-
+ }*/
+        Runnable task = () -> {
+            HttpClient httpClient = HttpClient.newHttpClient();
+            String result = makeHttpRequest(httpClient);
+            System.out.println("Thread is running and the result is: " + result);
+        };
+        for (int i = 0; i < numberOfThreads; i++) {
+            // Create a new thread and start it
+            Thread virtualThread = new Thread.ofVirtual().unstarted(task);
+            virtualThread.start();
+            virtualThread.join();
+            String str = String.format("Thread number %s is running.", i);
+            System.out.println(str);
+        }
     }
 
     private static String makeHttpRequest(HttpClient httpClient) {
