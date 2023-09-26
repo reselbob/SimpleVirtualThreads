@@ -5,6 +5,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.*;
 
 /**
  * Hello world!
@@ -13,44 +14,23 @@ import java.util.concurrent.CompletableFuture;
 public class AppTwo
 {
     public static void main( String[] args ) throws InterruptedException {
-        System.out.println( "Starting calls!" );
-        int numberOfThreads = 10;
 
-        // Create an HttpClient
-        HttpClient httpClient = HttpClient.newHttpClient();
-/*
-        // Create an array of CompletableFuture to store the results of each thread
-        CompletableFuture[] futures = new CompletableFuture[numberOfThreads];
-
-
-        for (int i = 0; i < numberOfThreads; i++) {
-            // Create a new thread for making an HTTP request
-            int threadNumber = i;
-            CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-                String result = makeHttpRequest(httpClient);
-                System.out.println("Thread " + threadNumber + ": " + result);
-            });
-
-            futures[i] = future;
-
-
-        // Wait for all threads to complete
-        CompletableFuture<Void> allOf = CompletableFuture.allOf(futures);
-        allOf.join();
- }*/
         Runnable task = () -> {
             HttpClient httpClient = HttpClient.newHttpClient();
             String result = makeHttpRequest(httpClient);
             System.out.println("Thread is running and the result is: " + result);
         };
-        for (int i = 0; i < numberOfThreads; i++) {
-            // Create a new thread and start it
-            Thread virtualThread = new Thread.ofVirtual().unstarted(task);
-            virtualThread.start();
-            virtualThread.join();
-            String str = String.format("Thread number %s is running.", i);
-            System.out.println(str);
+        final int taskCount = 10000;
+        ExecutorService service = Executors.newVirtualThreadPerTaskExecutor();
+        for (int i = 0; i < taskCount; i++) {
+            service.submit(() -> {
+                Thread thread = new Thread(task);
+                thread.start();
+                long id = Thread.currentThread().threadId();
+                System.out.println(id);
+            });
         }
+        service.close();
     }
 
     private static String makeHttpRequest(HttpClient httpClient) {
