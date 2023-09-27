@@ -156,7 +156,7 @@ docker build -t my-java-11-app -f Dockerfile .
 ```
 
 ```bash
-docker run -it --rm -a stdout -a stderr my-java-11-app mvn exec:java -Dexec.mainClass="org.example.App"
+docker run -it --rm -a stdout -a stderr my-java-11-app mvn -f /app/SimpleVirtualThreads/Java11/pom.xml  exec:java -Dexec.mainClass="org.example.App" | grep memory
 ```
 
 ## Java 21 and Maven
