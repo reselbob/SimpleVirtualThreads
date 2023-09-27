@@ -77,3 +77,21 @@ mvn compile
 ```bash
  mvn exec:java -Dexec.mainClass="org.example.AppTwo"
 ```
+
+# Running code as containers
+
+## Java 11 and Maven
+
+```bash
+docker build -t my-java-app-01 -f Dockerfile01 .
+docker run -it --rm -a stdout -a stderr my-java-app-01 mvn exec:java -Dexec.mainClass="org.example.AppOne"
+
+```
+
+## Java 21 and Maven
+
+```bash
+docker build -t my-java-app-02 -f Dockerfile02 .
+
+docker run -it --rm -a stdout -a stderr my-java-app-02 mvn exec:java -Dexec.mainClass="org.example.AppTwo"
+```
