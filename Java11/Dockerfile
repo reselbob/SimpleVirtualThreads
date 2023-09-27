@@ -54,9 +54,7 @@ RUN apt-get update && apt-get install -y git
 WORKDIR /app
 
 # Clone the GitHub repository and switch to the Development branch
-RUN git clone https://github.com/reselbob/SimpleVirtualThreads.git \
-    && cd SimpleVirtualThreads \
-    && git checkout development
+RUN git clone https://github.com/reselbob/SimpleVirtualThreads.git
 
 # Compile the project using Maven
 #RUN cd SimpleVirtualThreads

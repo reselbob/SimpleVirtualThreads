@@ -30,9 +30,7 @@ ENV PATH=$MAVEN_HOME/bin:$PATH
 WORKDIR /app
 
 # Clone the GitHub repository and switch to the Development branch
-RUN git clone https://github.com/reselbob/SimpleVirtualThreads.git && \
-    cd SimpleVirtualThreads && \
-    git checkout development
+RUN git clone https://github.com/reselbob/SimpleVirtualThreads.git
 
 # Compile the project using Maven
 RUN mvn compile -f /app/SimpleVirtualThreads/Java21/pom.xml

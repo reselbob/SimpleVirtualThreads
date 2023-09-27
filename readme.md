@@ -107,10 +107,6 @@ git clone https://github.com/reselbob/SimpleVirtualThreads.git
 cd SimpleVirtualThreads
 ```
 
-```bash
-git checkout development
-```
-
 # Run the evil code under Java 11
 
 ```bash
