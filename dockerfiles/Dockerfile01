@@ -27,7 +27,7 @@ WORKDIR /app
 # Clone the GitHub repository and switch to the Development branch
 RUN git clone https://github.com/reselbob/SimpleVirtualThreads.git \
     && cd SimpleVirtualThreads \
-    && git checkout Development
+    && git checkout development
 
 # Compile the project using Maven
 RUN cd SimpleVirtualThreads && mvn compile
