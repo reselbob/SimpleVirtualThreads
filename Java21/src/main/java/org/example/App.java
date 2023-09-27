@@ -20,7 +20,7 @@ public class App
             String result = makeHttpRequest(httpClient);
             System.out.println("Thread is running and the result is: " + result);
         };
-        final int taskCount = 10000;
+        final int taskCount = 10000000;
         ExecutorService service = Executors.newVirtualThreadPerTaskExecutor();
         for (int i = 0; i < taskCount; i++) {
             service.submit(() -> {
