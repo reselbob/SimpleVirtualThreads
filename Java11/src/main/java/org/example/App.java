@@ -4,33 +4,27 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.*;
 
-/**
- * Hello world!
- *
- */
-public class AppTwo
-{
-    public static void main( String[] args ) throws InterruptedException {
-
+public class App {
+    public static void main(String[] args) {
+        // Create a Runnable instance (a simple task)
         Runnable task = () -> {
             HttpClient httpClient = HttpClient.newHttpClient();
             String result = makeHttpRequest(httpClient);
             System.out.println("Thread is running and the result is: " + result);
         };
-        final int taskCount = 10000;
-        ExecutorService service = Executors.newVirtualThreadPerTaskExecutor();
-        for (int i = 0; i < taskCount; i++) {
-            service.submit(() -> {
-                Thread thread = new Thread(task);
-                thread.start();
-                long id = Thread.currentThread().threadId();
-                System.out.println(id);
-            });
+
+        int numberOfThreads = 1000000;
+
+        for (int i = 1; i <= numberOfThreads; i++) {
+            // Create a new thread and start it
+            Thread thread = new Thread(task);
+            thread.start();
+
+            String str = String.format("Thread number %s is running.", i);
+            System.out.println(str);
+
         }
-        service.close();
     }
 
     private static String makeHttpRequest(HttpClient httpClient) {
