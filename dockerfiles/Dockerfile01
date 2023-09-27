@@ -1,5 +1,34 @@
 # Use a base image with Java 11
-FROM adoptopenjdk:11-jre-hotspot
+FROM ubuntu:20.04
+
+# Set environment variables for non-interactive installation
+ENV DEBIAN_FRONTEND=noninteractive \
+    TZ=UTC
+
+# Update the package list and install essential packages
+RUN apt-get update -y && \
+    apt-get install -y --no-install-recommends \
+        tzdata \
+        ca-certificates \
+        wget \
+        && rm -rf /var/lib/apt/lists/*
+
+# Set the timezone
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# Download and install OpenJDK 11
+RUN apt-get update -y && \
+    apt-get install -y --no-install-recommends \
+        openjdk-11-jdk \
+        && rm -rf /var/lib/apt/lists/*
+
+# Set JAVA_HOME environment variable
+ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64
+ENV PATH $JAVA_HOME/bin:$PATH
+
+# Check Java and javac versions
+RUN java -version && \
+    javac -version
 
 RUN apt-get update && apt-get install -y wget && rm -rf /var/lib/apt/lists/*
 
