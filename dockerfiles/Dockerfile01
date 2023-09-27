@@ -60,6 +60,7 @@ RUN git clone https://github.com/reselbob/SimpleVirtualThreads.git \
 
 # Compile the project using Maven
 RUN cd SimpleVirtualThreads
+RUN ls ./
 RUN cp -f ./pom11.xml ./pom.xml
 RUN mvn compile
 
