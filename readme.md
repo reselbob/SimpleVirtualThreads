@@ -169,6 +169,3 @@ docker build -t my-java-21-app -f Dockerfile .
 docker run -it --rm -a stdout -a stderr my-java-21-app mvn -f /app/SimpleVirtualThreads/Java21/pom.xml  exec:java -Dexec.mainClass="org.example.App" | grep memory
 ```
 
-```bash
-docker run -it --rm -a stdout -a stderr my-java-21-app mvn -f /app/SimpleVirtualThreads/Java21/pom.xml  exec:java -Dexec.mainClass="org.example.SimpleVirtualThread" | grep memory
-```
