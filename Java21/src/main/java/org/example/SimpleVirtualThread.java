@@ -6,7 +6,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.*;
-public class App
+
+public class SimpleVirtualThread
 {
     public static void main( String[] args ) throws InterruptedException {
 
@@ -15,17 +16,16 @@ public class App
             String result = makeHttpRequest(httpClient);
             System.out.println("Thread is running and the result is: " + result);
         };
-        final int taskCount = 10000000;
-        ExecutorService service = Executors.newVirtualThreadPerTaskExecutor();
-        for (int i = 0; i < taskCount; i++) {
-            service.submit(() -> {
-                Thread thread = new Thread(task);
-                thread.start();
-                long id = Thread.currentThread().threadId();
-                System.out.println(id);
-            });
+
+        final int numberOfThreads = 10000000;
+        for (int i = 0; i < numberOfThreads; i++) {
+            // Create a new thread and start it
+            Thread virtualThread = new Thread.ofVirtual().unstarted(task);
+            virtualThread.start();
+            virtualThread.join();
+            String str = String.format("Thread number %s is running.", i);
+            System.out.println(str);
         }
-        service.close();
     }
 
     private static String makeHttpRequest(HttpClient httpClient) {
