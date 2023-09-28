@@ -1,5 +1,8 @@
 package org.example;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -15,17 +18,45 @@ public class App
             String result = makeHttpRequest(httpClient);
             System.out.println("Thread is running and the result is: " + result);
         };
-        final int taskCount = 10000000;
+        final int numberOfThreads = 1_000_000;
         ExecutorService service = Executors.newVirtualThreadPerTaskExecutor();
-        for (int i = 0; i < taskCount; i++) {
-            service.submit(() -> {
-                Thread thread = new Thread(task);
-                thread.start();
-                long id = Thread.currentThread().threadId();
-                System.out.println(id);
-            });
+        try {
+            for (int i = 0; i < numberOfThreads; i++) {
+                service.submit(() -> {
+                    // Specify the file path
+                    String filePath = "output.txt";
+                    // Create a new thread and start it
+                    Thread appendThread = new Thread(new AppendTask(filePath, i));
+                    appendThread.start();
+                    long id = Thread.currentThread().threadId();
+                    System.out.println(id);
+                });
+            }
+            service.close();
+        } catch (OutOfMemoryError e) {
+            // Handle the OutOfMemoryError
+            System.err.println(e);
+            try {
+                // Create a FileWriter with append mode (true)
+                FileWriter fileWriter = new FileWriter("error.log", true);
+                // Wrap the FileWriter with a BufferedWriter for efficient writing
+                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+                // Append the line to the file
+                bufferedWriter.write("Caught OutOfMemoryError: " + e.getMessage());
+                // Add a new line after the appended text
+                bufferedWriter.newLine();
+
+                // Close the resources
+                bufferedWriter.close();
+
+                fileWriter.close();
+
+            } catch (IOException err) {
+                // Handle exceptions
+                err.printStackTrace();
+            }
         }
-        service.close();
     }
 
     private static String makeHttpRequest(HttpClient httpClient) {
