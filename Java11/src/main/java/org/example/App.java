@@ -48,7 +48,7 @@ public class App {
         public void run() {
             try {
                 lock.lock();
-                // Thread will block indefinitely since the lock is never released
+                System.out.println("Thread output");
                 Thread.sleep(60000);
                 //Thread.sleep(Long.MAX_VALUE);
             } catch (InterruptedException e) {

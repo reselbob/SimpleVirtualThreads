@@ -64,7 +64,7 @@ public class App
         public void run() {
             try {
                 lock.lock();
-                // Thread will block indefinitely since the lock is never released
+                System.out.println("Thread output");
                 Thread.sleep(6000);
             } catch (InterruptedException e) {
                 // Handle InterruptedException if needed
