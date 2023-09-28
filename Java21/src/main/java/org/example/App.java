@@ -17,7 +17,7 @@ public class App
     private static final Lock lock = new ReentrantLock();
     public static void main( String[] args ) throws InterruptedException {
 
-
+        Thread.setDefaultUncaughtExceptionHandler(new CustomExceptionHandler());
         final int numberOfThreads = 1_000_000;
         ExecutorService service = Executors.newVirtualThreadPerTaskExecutor();
         try {
@@ -70,6 +70,17 @@ public class App
                 // Handle InterruptedException if needed
             } finally {
                 lock.unlock(); // This line will never be reached
+            }
+        }
+    }
+
+    static class CustomExceptionHandler implements Thread.UncaughtExceptionHandler {
+        @Override
+        public void uncaughtException(Thread t, Throwable e) {
+            // Check if the exception message contains the specific warning message
+            if (e.getMessage() != null && e.getMessage().contains("Failed to start thread \"Unknown thread\" - pthread_create failed (EAGAIN) for attributes: stacksize: 1024k, guardsize: 0k, detached.")) {
+                System.err.println("Warning detected. Exiting with status code 1.");
+                System.exit(1);
             }
         }
     }
