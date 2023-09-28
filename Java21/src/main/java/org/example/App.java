@@ -22,9 +22,10 @@ public class App
         ExecutorService service = Executors.newVirtualThreadPerTaskExecutor();
         try {
             for (int i = 0; i < numberOfThreads; i++) {
+                int final_I = i;
                 service.submit(() -> {
                     // Create a new thread and start it
-                    Thread thread = new Thread(new BlockedThread());
+                    Thread thread = new Thread(new BlockedThread(final_I));
                     thread.start();
                 });
             }
