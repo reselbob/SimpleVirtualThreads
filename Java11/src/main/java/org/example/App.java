@@ -3,23 +3,21 @@ package org.example;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class App {
+    private static final Lock lock = new ReentrantLock();
+
     public static void main(String[] args) {
-        int numberOfThreads = 1_000_000;
+        final int numberOfThreads = 1_000_000;
         try {
-            for (int i = 1; i <= numberOfThreads; i++) {
-                // Create a new thread and start it
-                // Specify the file path
-                String filePath = "output.txt";
-                // Create a new thread and start it
-                Thread appendThread = new Thread(new AppendTask(filePath, i));
-                appendThread.start();
+            for (int i = 0; i < numberOfThreads; i++) {
+                Thread thread = new Thread(new BlockedThread());
+                thread.start();
             }
         } catch (OutOfMemoryError e) {
-            // Handle the OutOfMemoryError
-            System.err.println(e);
+            System.err.println("OutOfMemoryError caught!");
             try {
                 // Create a FileWriter with append mode (true)
                 FileWriter fileWriter = new FileWriter("error.log", true);
@@ -36,6 +34,8 @@ public class App {
 
                 fileWriter.close();
 
+                System.exit(1);
+
             } catch (IOException err) {
                 // Handle exceptions
                 err.printStackTrace();
@@ -43,4 +43,19 @@ public class App {
         }
     }
 
+    static class BlockedThread implements Runnable {
+        @Override
+        public void run() {
+            try {
+                lock.lock();
+                // Thread will block indefinitely since the lock is never released
+                Thread.sleep(60000);
+                //Thread.sleep(Long.MAX_VALUE);
+            } catch (InterruptedException e) {
+                // Handle InterruptedException if needed
+            } finally {
+                lock.unlock(); // This line will never be reached
+            }
+        }
+    }
 }
