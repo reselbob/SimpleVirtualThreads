@@ -48,6 +48,8 @@ public class App
 
                 fileWriter.close();
 
+                System.exit(1);
+
             } catch (IOException err) {
                 // Handle exceptions
                 err.printStackTrace();
