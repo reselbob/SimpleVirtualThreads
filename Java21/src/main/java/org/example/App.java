@@ -18,7 +18,7 @@ public class App
     public static void main( String[] args ) throws InterruptedException {
 
         Thread.setDefaultUncaughtExceptionHandler(new CustomExceptionHandler());
-        final int numberOfThreads = 1_000_000;
+        final int numberOfThreads = 50_000;
         ExecutorService service = Executors.newVirtualThreadPerTaskExecutor();
         try {
             for (int i = 0; i < numberOfThreads; i++) {
@@ -60,11 +60,15 @@ public class App
     }
 
     static class BlockedThread implements Runnable {
+        private int count = 0;
+        public BlockedThread(int count){
+            this.count = count;
+        }
         @Override
         public void run() {
             try {
                 lock.lock();
-                System.out.println("Thread output");
+                System.out.println("Thread output for " + this.count);
                 Thread.sleep(6000);
             } catch (InterruptedException e) {
                 // Handle InterruptedException if needed

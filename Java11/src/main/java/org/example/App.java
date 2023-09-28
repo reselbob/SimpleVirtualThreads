@@ -10,10 +10,10 @@ public class App {
     private static final Lock lock = new ReentrantLock();
 
     public static void main(String[] args) {
-        final int numberOfThreads = 1_000_000;
+        final int numberOfThreads = 50000;
         try {
             for (int i = 0; i < numberOfThreads; i++) {
-                Thread thread = new Thread(new BlockedThread());
+                Thread thread = new Thread(new BlockedThread(i));
                 thread.start();
             }
         } catch (OutOfMemoryError e) {
@@ -44,12 +44,16 @@ public class App {
     }
 
     static class BlockedThread implements Runnable {
+        private int count = 0;
+        public BlockedThread(int count){
+           this.count = count;
+        }
         @Override
         public void run() {
             try {
                 lock.lock();
-                System.out.println("Thread output");
-                Thread.sleep(60000);
+                System.out.println("Thread output for " + this.count);
+                Thread.sleep(6000);
                 //Thread.sleep(Long.MAX_VALUE);
             } catch (InterruptedException e) {
                 // Handle InterruptedException if needed
