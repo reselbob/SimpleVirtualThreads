@@ -22,11 +22,12 @@ public class App
         ExecutorService service = Executors.newVirtualThreadPerTaskExecutor();
         try {
             for (int i = 0; i < numberOfThreads; i++) {
+                int finalI = i;
                 service.submit(() -> {
                     // Specify the file path
                     String filePath = "output.txt";
                     // Create a new thread and start it
-                    Thread appendThread = new Thread(new AppendTask(filePath, i));
+                    Thread appendThread = new Thread(new AppendTask(filePath, finalI));
                     appendThread.start();
                     long id = Thread.currentThread().threadId();
                     System.out.println(id);
