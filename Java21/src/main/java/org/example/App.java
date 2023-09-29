@@ -3,48 +3,31 @@ package org.example;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.*;
-public class App
-{
-    public static void main( String[] args ) throws InterruptedException {
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
-        Runnable task = () -> {
-            HttpClient httpClient = HttpClient.newHttpClient();
-            String result = makeHttpRequest(httpClient);
-            System.out.println("Thread is running and the result is: " + result);
-        };
+public class App {
+    private static final Lock lock = new ReentrantLock();
+    public static void main( String[] args ) throws InterruptedException {
+        Thread.setDefaultUncaughtExceptionHandler(new CustomExceptionHandler());
         final int numberOfThreads = 1_000_000;
-        ExecutorService service = Executors.newVirtualThreadPerTaskExecutor();
         try {
             for (int i = 0; i < numberOfThreads; i++) {
-                int finalI = i;
-                service.submit(() -> {
-                    // Specify the file path
-                    String filePath = "output.txt";
-                    // Create a new thread and start it
-                    Thread appendThread = new Thread(new AppendTask(filePath, finalI));
-                    appendThread.start();
-                    long id = Thread.currentThread().threadId();
-                    System.out.println(id);
-                });
-            }
-            service.close();
-        } catch (OutOfMemoryError e) {
+                Thread virtualThread = Thread.ofVirtual().unstarted(new BlockedThread(i));
+                virtualThread.start();
+                String str = String.format("Java 21 virtual thread number %s is running.", i);
+                System.out.println(str);
+                }
+            } catch (OutOfMemoryError e) {
             // Handle the OutOfMemoryError
-            System.err.println(e);
             try {
+                String str = "Java 11 - Caught OutOfMemoryError: " + e.getMessage();
                 // Create a FileWriter with append mode (true)
                 FileWriter fileWriter = new FileWriter("error.log", true);
                 // Wrap the FileWriter with a BufferedWriter for efficient writing
                 BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-
                 // Append the line to the file
-                bufferedWriter.write("Caught OutOfMemoryError: " + e.getMessage());
+                bufferedWriter.write(str);
                 // Add a new line after the appended text
                 bufferedWriter.newLine();
 
@@ -53,32 +36,46 @@ public class App
 
                 fileWriter.close();
 
+                System.err.println(str);
+
+                System.exit(1);
+
             } catch (IOException err) {
                 // Handle exceptions
                 err.printStackTrace();
             }
         }
+
+
     }
 
-    private static String makeHttpRequest(HttpClient httpClient) {
-        // Replace this URL with the API you want to call
-        String apiUrl = "http://worldtimeapi.org/api/timezone/America/New_York";
-
-        // Create an HTTP request
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(apiUrl))
-                .build();
-
-        // Send the request asynchronously and handle the response
-        try {
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            if (response.statusCode() == 200) {
-                return "Response: " + response.body();
-            } else {
-                return "HTTP request failed with status code: " + response.statusCode();
+    static class BlockedThread implements Runnable {
+        private int count = 0;
+        public BlockedThread(int count){
+            this.count = count;
+        }
+        @Override
+        public void run() {
+            try {
+                lock.lock();
+                System.out.println("Thread output for " + this.count);
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                // Handle InterruptedException if needed
+            } finally {
+                lock.unlock(); // This line will never be reached
             }
-        } catch (Exception e) {
-            return "Error making HTTP request: " + e.getMessage();
+        }
+    }
+
+    static class CustomExceptionHandler implements Thread.UncaughtExceptionHandler {
+        @Override
+        public void uncaughtException(Thread t, Throwable e) {
+            // Check if the exception message contains the specific warning message
+            if (e.getMessage() != null && e.getMessage().contains("Failed to start thread \"Unknown thread\" - pthread_create failed (EAGAIN) for attributes: stacksize: 1024k, guardsize: 0k, detached.")) {
+                System.err.println("Warning detected. Exiting with status code 1.");
+                System.exit(1);
+            }
         }
     }
 }
