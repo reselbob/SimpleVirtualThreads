@@ -118,12 +118,14 @@ mvn compile
 ```
 
 ```bash
- mvn exec:java -Dexec.mainClass="org.example.App" | grep memory
+ mvn exec:java -Dexec.mainClass="org.example.App"
 ```
 
-You'll see lines of errors like so:
+You'll see error ouput similar to the following:
 
-`Thread is running and the result is: Error making HTTP request: unable to create native thread: possibly out of memory or process/resource limits reached`
+```bash
+There is insufficient memory for the Java Runtime Environment to continue.
+```
 
 # Run the good code under Java 21
 
@@ -136,7 +138,13 @@ mvn compile
 ```
 
 ```bash
- mvn exec:java -Dexec.mainClass="org.example.App" | grep memory
+ mvn exec:java -Dexec.mainClass="org.example.App" 
+```
+
+Upon success you'll see the following output:
+
+```bash
+All threads under  have run under Java 21.
 ```
 
 # Running code as containers
@@ -152,7 +160,7 @@ docker build -t my-java-11-app -f Dockerfile .
 ```
 
 ```bash
-docker run -it --rm -a stdout -a stderr my-java-11-app mvn -f /app/SimpleVirtualThreads/Java11/pom.xml  exec:java -Dexec.mainClass="org.example.App" | grep memory
+docker run -it --rm -a stdout -a stderr my-java-11-app mvn -f /app/SimpleVirtualThreads/Java11/pom.xml  exec:java -Dexec.mainClass="org.example.App"
 ```
 
 ## Java 21 and Maven
@@ -166,6 +174,6 @@ docker build -t my-java-21-app -f Dockerfile .
 ```
 
 ```bash
-docker run -it --rm -a stdout -a stderr my-java-21-app mvn -f /app/SimpleVirtualThreads/Java21/pom.xml  exec:java -Dexec.mainClass="org.example.App" | grep memory
+docker run -it --rm -a stdout -a stderr my-java-21-app mvn -f /app/SimpleVirtualThreads/Java21/pom.xml  exec:java -Dexec.mainClass="org.example.App"
 ```
 
