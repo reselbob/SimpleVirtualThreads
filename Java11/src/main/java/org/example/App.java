@@ -18,6 +18,7 @@ public class App {
                 String str = String.format("Java 11 thread number %s is running.", i);
                 System.out.println(str);
             }
+            System.out.println("All threads under  have run under Java 11.");
         } catch (OutOfMemoryError e) {
             try {
                 String str = "Java 11 - Caught OutOfMemoryError: " + e.getMessage();

@@ -18,6 +18,7 @@ public class App {
                 String str = String.format("Java 21 virtual thread number %s is running.", i);
                 System.out.println(str);
                 }
+            System.out.println("All threads under  have run under Java 21.");
             } catch (OutOfMemoryError e) {
             // Handle the OutOfMemoryError
             try {
@@ -45,8 +46,6 @@ public class App {
                 err.printStackTrace();
             }
         }
-
-
     }
 
     static class BlockedThread implements Runnable {
