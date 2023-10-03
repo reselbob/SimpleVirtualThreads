@@ -33,7 +33,7 @@ java --version
 ```
 
 
-# Installing Java 21 on Ubuntu
+## Installing Java 21 on Ubuntu
 
 On the other virtual machine install Java 21 using the instructions shown below.
 
@@ -81,7 +81,7 @@ source ~/.bashrc
 java --version
 ```
 
-# Install Maven 3.9.4 on Ubuntu
+## Install Maven 3.9.4 on Ubuntu
 
 Install Maven 3.9.4 on both virtual machines using the instructions shown below.
 
@@ -113,7 +113,7 @@ source ~/.bashrc
 mvn --version
 ```
 
-# Get the source code
+## Get the source code
 
 Install the source code on both virtual machines using the following instructions.
 
@@ -129,7 +129,7 @@ git clone https://github.com/reselbob/SimpleVirtualThreads.git
 cd SimpleVirtualThreads
 ```
 
-# Run the Java 11 code
+## Run the Java 11 code
 
 On the virtual machine running Java 11 go to the directory that has the source code for the Java 11 [here](./Java11) and execute the following instructions.
 
@@ -151,7 +151,7 @@ You'll see error ouput similar to the following:
 There is insufficient memory for the Java Runtime Environment to continue.
 ```
 
-# Run the Java 21 code
+## Run the Java 21 code
 
 On the virtual machine running Java 21 go to the directory that has the source code for the Java 21 [here](./Java21) and execute the following instructions.
 
